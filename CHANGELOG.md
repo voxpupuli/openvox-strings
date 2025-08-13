@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v6.0.0](https://github.com/voxpupuli/openvox-strings/tree/v6.0.0) (2025-08-13)
+
+[Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v5.0.0...v6.0.0)
+
+**Breaking changes:**
+
+- Require Ruby 3.2 or newer [\#13](https://github.com/voxpupuli/openvox-strings/pull/13) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Allow rgen 0.10.x [\#10](https://github.com/voxpupuli/openvox-strings/pull/10) ([smortex](https://github.com/smortex))
+
 ## [v5.0.0](https://github.com/voxpupuli/openvox-strings/tree/v5.0.0) (2025-06-10)
 
 [Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v4.1.3...v5.0.0)
@@ -14,6 +26,10 @@ All notable changes to this project will be documented in this file.
 
 - Rake task allows for a different commit message [\#4](https://github.com/voxpupuli/openvox-strings/pull/4) ([bastelfreak](https://github.com/bastelfreak))
 - Add Ruby 2.7/3.0 support [\#3](https://github.com/voxpupuli/openvox-strings/pull/3) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- dependabot: check for github actions and bundler [\#6](https://github.com/voxpupuli/openvox-strings/pull/6) ([bastelfreak](https://github.com/bastelfreak))
 
 <!-- markdownlint-disable MD024 -->
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
