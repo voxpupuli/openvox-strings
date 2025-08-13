@@ -26,7 +26,7 @@ group :development do
 
   gem 'rake'
   gem 'rspec', '~> 3.1'
-  gem 'rspec-its', '~> 1.0'
+  gem 'rspec-its', '~> 2.0'
 
   gem 'redcarpet'
 end
