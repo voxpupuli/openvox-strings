@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'rgen', '>= 0.9', '< 0.11'
   s.add_dependency 'yard', '~> 0.9'
 
-  s.add_development_dependency 'voxpupuli-rubocop', '~> 5.0.0'
+  s.add_development_dependency 'voxpupuli-rubocop', '~> 5.1.0'
 end
