@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   ]
   s.files = Dir['CHANGELOG.md', 'README.md', 'LICENSE', 'lib/**/*', 'exe/**/*']
 
-  s.add_dependency 'openvox', '>= 7', '< 9'
+  s.add_dependency 'openvox', '>= 8.24', '< 9'
   s.add_dependency 'rgen', '>= 0.9', '< 0.11'
   s.add_dependency 'yard', '~> 0.9'
 
