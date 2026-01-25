@@ -198,5 +198,28 @@ describe OpenvoxStrings::Hiera do
       expect(result).to include("'array' => [1, 2]")
       expect(result).to include("'nested_hash' => { 'key' => 'value' }")
     end
+
+    it 'formats arrays without spaces to match code defaults' do
+      # Arrays must use ['a', 'b'] not [ 'a', 'b' ] to match puppet-strings code format
+      result = hiera.send(:value_to_puppet_string, ['alpha', 'beta', 'gamma'])
+      expect(result).to eq("['alpha', 'beta', 'gamma']")
+      expect(result).not_to include('[ ')
+      expect(result).not_to include(' ]')
+    end
+
+    it 'formats integer arrays without spaces to match code defaults' do
+      result = hiera.send(:value_to_puppet_string, [1, 2, 3, 5, 8])
+      expect(result).to eq('[1, 2, 3, 5, 8]')
+      expect(result).not_to include('[ ')
+      expect(result).not_to include(' ]')
+    end
+
+    it 'formats nested arrays in hashes without spaces' do
+      nested = { 'tags' => ['prod', 'eu'] }
+      result = hiera.send(:value_to_puppet_string, nested)
+      expect(result).to eq("{ 'tags' => ['prod', 'eu'] }")
+      expect(result).not_to include('[ ')
+      expect(result).not_to include(' ]')
+    end
   end
 end
