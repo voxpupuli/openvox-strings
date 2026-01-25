@@ -95,17 +95,17 @@ module OpenvoxStrings
         # Puppet undef
         'undef'
       when Hash
-        # Convert hash to Puppet hash syntax
+        # Convert hash to Puppet hash syntax (no spaces to match code defaults format)
         return '{}' if value.empty?
 
         pairs = value.map { |k, v| "'#{k}' => #{value_to_puppet_string(v)}" }
         "{ #{pairs.join(', ')} }"
       when Array
-        # Convert array to Puppet array syntax
+        # Convert array to Puppet array syntax (no spaces to match code defaults format)
         return '[]' if value.empty?
 
         elements = value.map { |v| value_to_puppet_string(v) }
-        "[ #{elements.join(', ')} ]"
+        "[#{elements.join(', ')}]"
       else
         # Fallback: convert to string and quote
         "'#{value}'"

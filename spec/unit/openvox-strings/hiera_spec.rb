@@ -180,7 +180,7 @@ describe OpenvoxStrings::Hiera do
     end
 
     it 'converts arrays with values' do
-      expect(hiera.send(:value_to_puppet_string, ['a', 'b'])).to eq("[ 'a', 'b' ]")
+      expect(hiera.send(:value_to_puppet_string, ['a', 'b'])).to eq("['a', 'b']")
     end
 
     it 'converts empty hashes' do
@@ -195,7 +195,7 @@ describe OpenvoxStrings::Hiera do
     it 'converts nested structures' do
       nested = { 'array' => [1, 2], 'nested_hash' => { 'key' => 'value' } }
       result = hiera.send(:value_to_puppet_string, nested)
-      expect(result).to include("'array' => [ 1, 2 ]")
+      expect(result).to include("'array' => [1, 2]")
       expect(result).to include("'nested_hash' => { 'key' => 'value' }")
     end
   end
