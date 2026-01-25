@@ -4,6 +4,7 @@ require 'openvox-strings'
 require 'openvox-strings/json'
 require 'openvox-strings/yard'
 require 'openvox-strings/markdown/helpers'
+require 'openvox-strings/hiera'
 
 # Implements classes that make elements in a YARD::Registry hash easily accessible for template.
 module OpenvoxStrings::Markdown
@@ -86,6 +87,7 @@ module OpenvoxStrings::Markdown
       @type = component_type
       @registry = registry
       @tags = registry[:docstring][:tags] || []
+      @hiera = initialize_hiera
     end
 
     # generate 1:1 tag methods
@@ -174,7 +176,13 @@ module OpenvoxStrings::Markdown
 
     # @return [Hash] any defaults found for the component
     def defaults
-      @registry[:defaults] unless @registry[:defaults].nil?
+      # Start with code defaults from the Puppet class
+      code_defaults = @registry[:defaults] || {}
+
+      # Try to merge with Hiera defaults if available
+      merged_defaults = merge_hiera_defaults(code_defaults)
+
+      merged_defaults.empty? ? nil : merged_defaults
     end
 
     # @return [Hash] information needed for the table of contents
@@ -215,6 +223,70 @@ module OpenvoxStrings::Markdown
     end
 
     private
+
+    # Initializes Hiera integration for this component
+    # @return [OpenvoxStrings::Hiera, nil] Hiera instance or nil if not available
+    def initialize_hiera
+      return nil unless @registry[:file]
+
+      # Find the module root directory from the file path
+      # Puppet modules have manifests/, lib/, data/ etc. at the root
+      module_path = find_module_root(@registry[:file])
+      return nil unless module_path
+
+      OpenvoxStrings::Hiera.new(module_path)
+    rescue StandardError => e
+      YARD::Logger.instance.debug "Failed to initialize Hiera: #{e.message}"
+      nil
+    end
+
+    # Finds the module root directory from a file path
+    # @param [String] file_path The path to a file in the module
+    # @return [String, nil] The module root path or nil if not found
+    def find_module_root(file_path)
+      current_path = File.dirname(File.expand_path(file_path))
+
+      # Walk up the directory tree looking for module indicators
+      10.times do
+        # Check if this looks like a module root (has manifests/, lib/, or hiera.yaml)
+        if File.exist?(File.join(current_path, 'hiera.yaml')) ||
+           (File.exist?(File.join(current_path, 'manifests')) && File.exist?(File.join(current_path, 'metadata.json')))
+          return current_path
+        end
+
+        parent = File.dirname(current_path)
+        break if parent == current_path # Reached filesystem root
+
+        current_path = parent
+      end
+
+      nil
+    end
+
+    # Merges code defaults with Hiera defaults
+    # @param [Hash] code_defaults The defaults from the Puppet code
+    # @return [Hash] Merged defaults with code defaults taking precedence
+    def merge_hiera_defaults(code_defaults)
+      return code_defaults unless @hiera&.hiera_enabled?
+
+      # Start with Hiera defaults
+      merged = {}
+
+      # Get all parameters from the docstring
+      param_tags = @tags.select { |tag| tag[:tag_name] == 'param' }
+
+      param_tags.each do |param_tag|
+        param_name = param_tag[:name]
+        next unless param_name
+
+        # Try to get default from Hiera
+        hiera_default = @hiera.lookup_default(name, param_name)
+        merged[param_name] = hiera_default if hiera_default
+      end
+
+      # Code defaults override Hiera defaults
+      merged.merge(code_defaults)
+    end
 
     def select_tags(name)
       tags = @tags.select { |tag| tag[:tag_name] == name }
