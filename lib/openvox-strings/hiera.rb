@@ -96,10 +96,14 @@ module OpenvoxStrings
         'undef'
       when Hash
         # Convert hash to Puppet hash syntax
+        return '{}' if value.empty?
+
         pairs = value.map { |k, v| "'#{k}' => #{value_to_puppet_string(v)}" }
         "{ #{pairs.join(', ')} }"
       when Array
         # Convert array to Puppet array syntax
+        return '[]' if value.empty?
+
         elements = value.map { |v| value_to_puppet_string(v) }
         "[ #{elements.join(', ')} ]"
       else

@@ -129,7 +129,7 @@ describe OpenvoxStrings::Hiera do
 
     it 'returns empty hash as {}' do
       result = hiera.lookup_default('circus', 'performers')
-      expect(result).to eq('{  }')
+      expect(result).to eq('{}')
     end
 
     it 'returns nil/undef as undef' do
@@ -176,7 +176,7 @@ describe OpenvoxStrings::Hiera do
     end
 
     it 'converts empty arrays' do
-      expect(hiera.send(:value_to_puppet_string, [])).to eq('[  ]')
+      expect(hiera.send(:value_to_puppet_string, [])).to eq('[]')
     end
 
     it 'converts arrays with values' do
@@ -184,7 +184,7 @@ describe OpenvoxStrings::Hiera do
     end
 
     it 'converts empty hashes' do
-      expect(hiera.send(:value_to_puppet_string, {})).to eq('{  }')
+      expect(hiera.send(:value_to_puppet_string, {})).to eq('{}')
     end
 
     it 'converts hashes with values' do
