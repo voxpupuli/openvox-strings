@@ -180,7 +180,7 @@ describe OpenvoxStrings::Hiera do
     end
 
     it 'converts arrays with values' do
-      expect(hiera.send(:value_to_puppet_string, ['a', 'b'])).to eq("['a', 'b']")
+      expect(hiera.send(:value_to_puppet_string, %w[a b])).to eq("['a', 'b']")
     end
 
     it 'converts empty hashes' do
@@ -201,7 +201,7 @@ describe OpenvoxStrings::Hiera do
 
     it 'formats arrays without spaces to match code defaults' do
       # Arrays must use ['a', 'b'] not [ 'a', 'b' ] to match puppet-strings code format
-      result = hiera.send(:value_to_puppet_string, ['alpha', 'beta', 'gamma'])
+      result = hiera.send(:value_to_puppet_string, %w[alpha beta gamma])
       expect(result).to eq("['alpha', 'beta', 'gamma']")
       expect(result).not_to include('[ ')
       expect(result).not_to include(' ]')
@@ -215,7 +215,7 @@ describe OpenvoxStrings::Hiera do
     end
 
     it 'formats nested arrays in hashes without spaces' do
-      nested = { 'tags' => ['prod', 'eu'] }
+      nested = { 'tags' => %w[prod eu] }
       result = hiera.send(:value_to_puppet_string, nested)
       expect(result).to eq("{ 'tags' => ['prod', 'eu'] }")
       expect(result).not_to include('[ ')

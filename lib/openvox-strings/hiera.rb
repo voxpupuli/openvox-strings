@@ -85,11 +85,8 @@ module OpenvoxStrings
 
         # Strings should be quoted
         "'#{value}'"
-      when Integer, Float
-        # Numbers are unquoted
-        value.to_s
-      when TrueClass, FalseClass
-        # Booleans are lowercase
+      when Integer, Float, TrueClass, FalseClass
+        # Numbers and booleans are unquoted/lowercase
         value.to_s
       when NilClass, :undef
         # Puppet undef
