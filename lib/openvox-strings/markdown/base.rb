@@ -244,12 +244,12 @@ module OpenvoxStrings::Markdown
     # @param [String] file_path The path to a file in the module
     # @return [String, nil] The module root path or nil if not found
     def find_module_root(file_path)
-    names = %w[metadata.json manifests hiera.yaml]
-    Pathname.new(file_path).expand_path.parent.ascend do |current_path|
-      names.each do |name|
-        return current_path if (current_path / name).exist?
+      names = %w[metadata.json manifests hiera.yaml]
+      Pathname.new(file_path).expand_path.parent.ascend do |current_path|
+        names.each do |name|
+          return current_path if (current_path / name).exist?
+        end
       end
-    end
     end
 
     # Merges code defaults with Hiera defaults

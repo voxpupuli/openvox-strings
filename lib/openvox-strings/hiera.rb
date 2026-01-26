@@ -55,21 +55,40 @@ module OpenvoxStrings
       end
     end
 
-    # Loads and parses data/common.yaml from the module
-    # @return [Hash, nil] The parsed common data, or nil if not found/invalid
+    # Loads and parses the first static hierarchy layer (without interpolations)
+    # @return [Hash, nil] The parsed data, or nil if not found/invalid
     def load_common_data
       return nil unless hiera_enabled?
 
       # Get datadir from hiera config (defaults to 'data')
       datadir = @hiera_config.dig('defaults', 'datadir') || 'data'
-      common_file = File.join(@module_path, datadir, 'common.yaml')
 
-      return nil unless File.exist?(common_file)
+      # Find first hierarchy entry without interpolations
+      hierarchy = @hiera_config['hierarchy']
+      return nil unless hierarchy
+
+      first_static = hierarchy.find do |entry|
+        path = entry['path'] || entry['paths']&.first
+        next false unless path
+
+        # Check if path contains interpolations like %{...}
+        !path.match?(/%\{[^}]+\}/)
+      end
+
+      return nil unless first_static
+
+      # Get the path from the hierarchy entry
+      data_file_path = first_static['path'] || first_static['paths']&.first
+      return nil unless data_file_path
+
+      # Build full path
+      data_file = File.join(@module_path, datadir, data_file_path)
+      return nil unless File.exist?(data_file)
 
       begin
-        YAML.load_file(common_file)
+        YAML.load_file(data_file)
       rescue StandardError => e
-        YARD::Logger.instance.warn "Failed to parse common.yaml: #{e.message}"
+        YARD::Logger.instance.warn "Failed to parse #{data_file_path}: #{e.message}"
         nil
       end
     end
