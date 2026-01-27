@@ -72,7 +72,7 @@ module OpenvoxStrings
         next false unless path
 
         # Check if path contains interpolations like %{...}
-        !path.match?(/%\{[^}]+\}/)
+        !path.include?('%{')
       end
 
       return nil unless first_static

@@ -69,6 +69,7 @@ describe OpenvoxStrings::Hiera do
 
     context 'when hierarchy contains interpolations before static layer' do
       before do
+        # rubocop:disable Style/FormatStringToken
         File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
           version: 5
           defaults:
@@ -82,6 +83,7 @@ describe OpenvoxStrings::Hiera do
             - name: "Common defaults"
               path: "common.yaml"
         YAML
+        # rubocop:enable Style/FormatStringToken
       end
 
       it 'skips layers with interpolations and returns first static layer' do
@@ -93,6 +95,7 @@ describe OpenvoxStrings::Hiera do
 
     context 'when only interpolated layers exist' do
       before do
+        # rubocop:disable Style/FormatStringToken
         File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
           version: 5
           defaults:
@@ -104,6 +107,7 @@ describe OpenvoxStrings::Hiera do
             - name: "Per-environment data"
               path: "env/%{environment}.yaml"
         YAML
+        # rubocop:enable Style/FormatStringToken
       end
 
       it 'returns nil' do
@@ -205,7 +209,7 @@ describe OpenvoxStrings::Hiera do
     context 'when file contains invalid YAML' do
       before do
         FileUtils.mkdir_p(File.join(temp_dir, 'data'))
-        File.write(File.join(temp_dir, 'data', 'invalid.yaml'), "invalid: yaml: content: [")
+        File.write(File.join(temp_dir, 'data', 'invalid.yaml'), 'invalid: yaml: content: [')
       end
 
       it 'returns nil and logs warning' do
