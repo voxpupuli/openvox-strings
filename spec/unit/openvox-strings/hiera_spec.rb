@@ -46,6 +46,177 @@ describe OpenvoxStrings::Hiera do
     end
   end
 
+  describe '#find_first_static_layer_path' do
+    context 'when a static layer exists' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Common defaults"
+              path: "common.yaml"
+        YAML
+      end
+
+      it 'returns the full path to the static layer' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to eq(File.join(temp_dir, 'data', 'common.yaml'))
+      end
+    end
+
+    context 'when hierarchy contains interpolations before static layer' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Per-node data"
+              path: "nodes/%{facts.hostname}.yaml"
+            - name: "Per-environment data"
+              path: "env/%{facts.environment}.yaml"
+            - name: "Common defaults"
+              path: "common.yaml"
+        YAML
+      end
+
+      it 'skips layers with interpolations and returns first static layer' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to eq(File.join(temp_dir, 'data', 'common.yaml'))
+      end
+    end
+
+    context 'when only interpolated layers exist' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Per-node data"
+              path: "nodes/%{facts.hostname}.yaml"
+            - name: "Per-environment data"
+              path: "env/%{environment}.yaml"
+        YAML
+      end
+
+      it 'returns nil' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when using custom datadir' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: hieradata
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Common"
+              path: "common.yaml"
+        YAML
+      end
+
+      it 'uses the custom datadir' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to eq(File.join(temp_dir, 'hieradata', 'common.yaml'))
+      end
+    end
+
+    context 'when hierarchy uses paths instead of path' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Multiple paths"
+              paths:
+                - "first.yaml"
+                - "second.yaml"
+        YAML
+      end
+
+      it 'uses the first path from paths array' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to eq(File.join(temp_dir, 'data', 'first.yaml'))
+      end
+    end
+
+    context 'when hierarchy is empty' do
+      before do
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy: []
+        YAML
+      end
+
+      it 'returns nil' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        expect(result).to be_nil
+      end
+    end
+  end
+
+  describe '#load_yaml_data' do
+    context 'when file exists and is valid YAML' do
+      before do
+        FileUtils.mkdir_p(File.join(temp_dir, 'data'))
+        File.write(File.join(temp_dir, 'data', 'test.yaml'), <<~YAML)
+          key1: value1
+          key2: 42
+        YAML
+      end
+
+      it 'loads and parses the YAML file' do
+        hiera = described_class.new(temp_dir)
+        file_path = File.join(temp_dir, 'data', 'test.yaml')
+        result = hiera.send(:load_yaml_data, file_path)
+        expect(result).not_to be_nil
+        expect(result['key1']).to eq('value1')
+        expect(result['key2']).to eq(42)
+      end
+    end
+
+    context 'when file does not exist' do
+      it 'returns nil' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:load_yaml_data, File.join(temp_dir, 'nonexistent.yaml'))
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when file contains invalid YAML' do
+      before do
+        FileUtils.mkdir_p(File.join(temp_dir, 'data'))
+        File.write(File.join(temp_dir, 'data', 'invalid.yaml'), "invalid: yaml: content: [")
+      end
+
+      it 'returns nil and logs warning' do
+        hiera = described_class.new(temp_dir)
+        file_path = File.join(temp_dir, 'data', 'invalid.yaml')
+        result = hiera.send(:load_yaml_data, file_path)
+        expect(result).to be_nil
+      end
+    end
+  end
+
   describe '#load_common_data' do
     context 'when common.yaml exists' do
       before do

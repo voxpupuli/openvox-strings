@@ -55,9 +55,9 @@ module OpenvoxStrings
       end
     end
 
-    # Loads and parses the first static hierarchy layer (without interpolations)
-    # @return [Hash, nil] The parsed data, or nil if not found/invalid
-    def load_common_data
+    # Finds the path to the first static hierarchy layer (without interpolations)
+    # @return [String, nil] The full path to the data file, or nil if not found
+    def find_first_static_layer_path
       return nil unless hiera_enabled?
 
       # Get datadir from hiera config (defaults to 'data')
@@ -81,16 +81,31 @@ module OpenvoxStrings
       data_file_path = first_static['path'] || first_static['paths']&.first
       return nil unless data_file_path
 
-      # Build full path
-      data_file = File.join(@module_path, datadir, data_file_path)
-      return nil unless File.exist?(data_file)
+      # Build and return full path
+      File.join(@module_path, datadir, data_file_path)
+    end
+
+    # Loads and parses a YAML data file
+    # @param [String] file_path The full path to the YAML file to load
+    # @return [Hash, nil] The parsed YAML data, or nil if not found/invalid
+    def load_yaml_data(file_path)
+      return nil unless File.exist?(file_path)
 
       begin
-        YAML.load_file(data_file)
+        YAML.load_file(file_path)
       rescue StandardError => e
-        YARD::Logger.instance.warn "Failed to parse #{data_file_path}: #{e.message}"
+        YARD::Logger.instance.warn "Failed to parse #{File.basename(file_path)}: #{e.message}"
         nil
       end
+    end
+
+    # Loads and parses the first static hierarchy layer (without interpolations)
+    # @return [Hash, nil] The parsed data, or nil if not found/invalid
+    def load_common_data
+      data_file = find_first_static_layer_path
+      return nil unless data_file
+
+      load_yaml_data(data_file)
     end
 
     # Converts a Ruby value to a Puppet-compatible string representation
