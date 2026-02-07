@@ -159,6 +159,34 @@ describe OpenvoxStrings::Hiera do
       end
     end
 
+    context 'when hierarchy uses paths array with mixed static and interpolated entries' do
+      before do
+        # rubocop:disable Style/FormatStringToken
+        File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)
+          version: 5
+          defaults:
+            datadir: data
+            data_hash: yaml_data
+          hierarchy:
+            - name: "Mixed paths"
+              paths:
+                - "common.yaml"
+                - "nodes/%{facts.hostname}.yaml"
+            - name: "Fallback"
+              path: "fallback.yaml"
+        YAML
+        # rubocop:enable Style/FormatStringToken
+      end
+
+      it 'skips paths array containing any interpolations and uses next static layer' do
+        hiera = described_class.new(temp_dir)
+        result = hiera.send(:find_first_static_layer_path)
+        # Should skip "Mixed paths" because it contains interpolated entries
+        # and return "fallback.yaml" instead
+        expect(result).to eq(File.join(temp_dir, 'data', 'fallback.yaml'))
+      end
+    end
+
     context 'when hierarchy is empty' do
       before do
         File.write(File.join(temp_dir, 'hiera.yaml'), <<~YAML)

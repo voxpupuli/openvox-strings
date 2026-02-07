@@ -45,14 +45,7 @@ module OpenvoxStrings
     # @return [Hash, nil] The parsed hiera configuration, or nil if not found/invalid
     def load_hiera_config
       hiera_file = File.join(@module_path, 'hiera.yaml')
-      return nil unless File.exist?(hiera_file)
-
-      begin
-        YAML.load_file(hiera_file)
-      rescue StandardError => e
-        YARD::Logger.instance.warn "Failed to parse hiera.yaml: #{e.message}"
-        nil
-      end
+      load_yaml_data(hiera_file)
     end
 
     # Finds the path to the first static hierarchy layer (without interpolations)
@@ -68,11 +61,18 @@ module OpenvoxStrings
       return nil unless hierarchy
 
       first_static = hierarchy.find do |entry|
-        path = entry['path'] || entry['paths']&.first
-        next false unless path
+        path_or_paths = entry['path'] || entry['paths']
+        next false unless path_or_paths
 
-        # Check if path contains interpolations like %{...}
-        !path.include?('%{')
+        # Check if path(s) contain interpolations like %{...}
+        case path_or_paths
+        when String
+          !path_or_paths.include?('%{')
+        when Array
+          path_or_paths.none? { |p| p.include?('%{') }
+        else
+          false
+        end
       end
 
       return nil unless first_static
