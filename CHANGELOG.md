@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v6.1.0](https://github.com/voxpupuli/openvox-strings/tree/v6.1.0) (2026-02-19)
+
+[Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v6.0.0...v6.1.0)
+
+**Implemented enhancements:**
+
+- Add Ruby 4.0 support [\#26](https://github.com/voxpupuli/openvox-strings/pull/26) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v6.0.0](https://github.com/voxpupuli/openvox-strings/tree/v6.0.0) (2025-08-13)
 
 [Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v5.0.0...v6.0.0)
@@ -26,10 +34,6 @@ All notable changes to this project will be documented in this file.
 
 - Rake task allows for a different commit message [\#4](https://github.com/voxpupuli/openvox-strings/pull/4) ([bastelfreak](https://github.com/bastelfreak))
 - Add Ruby 2.7/3.0 support [\#3](https://github.com/voxpupuli/openvox-strings/pull/3) ([bastelfreak](https://github.com/bastelfreak))
-
-**Merged pull requests:**
-
-- dependabot: check for github actions and bundler [\#6](https://github.com/voxpupuli/openvox-strings/pull/6) ([bastelfreak](https://github.com/bastelfreak))
 
 <!-- markdownlint-disable MD024 -->
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
