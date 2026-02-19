@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v7.0.0](https://github.com/voxpupuli/openvox-strings/tree/v7.0.0) (2026-02-19)
+
+[Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v6.1.0...v7.0.0)
+
+**Breaking changes:**
+
+- Add Hiera defaults support for module documentation [\#27](https://github.com/voxpupuli/openvox-strings/pull/27) ([slauger](https://github.com/slauger))
+
 ## [v6.1.0](https://github.com/voxpupuli/openvox-strings/tree/v6.1.0) (2026-02-19)
 
 [Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v6.0.0...v6.1.0)
