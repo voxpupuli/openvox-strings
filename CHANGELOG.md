@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v7.1.0](https://github.com/voxpupuli/openvox-strings/tree/v7.1.0) (2026-03-12)
+
+[Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v7.0.0...v7.1.0)
+
+**Implemented enhancements:**
+
+- Remove openvox dependency version constraint [\#33](https://github.com/voxpupuli/openvox-strings/pull/33) ([genebean](https://github.com/genebean))
+
 ## [v7.0.0](https://github.com/voxpupuli/openvox-strings/tree/v7.0.0) (2026-02-19)
 
 [Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v6.1.0...v7.0.0)
