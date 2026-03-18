@@ -26,5 +26,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'yard', '~> 0.9'
 
   s.add_development_dependency 'openvox', '>= 8.24', '< 9'
-  s.add_development_dependency 'voxpupuli-rubocop', '~> 5.1.0'
+  s.add_development_dependency 'voxpupuli-rubocop', '~> 5.2.0'
 end
