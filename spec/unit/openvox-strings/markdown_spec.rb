@@ -164,6 +164,33 @@ describe OpenvoxStrings::Markdown do
     end
   end
 
+  describe 'output hygiene' do
+    it 'ends with a single trailing newline' do
+      expect(YARD::Parser::SourceParser.parse_string(<<~PUPPET, :puppet).enumerator.length).to eq(1)
+        # @return void
+        function func_public() {}
+      PUPPET
+
+      output = described_class.generate
+      expect(output).to end_with("\n")
+      expect(output).not_to end_with("\n\n")
+    end
+
+    it 'does not emit lines with trailing whitespace' do
+      expect(YARD::Parser::SourceParser.parse_string(<<~PUPPET, :puppet).enumerator.length).to eq(1)
+        # A function.
+        # @raise SomeError
+        # @return [Integer] the answer
+        function foo() {
+          42
+        }
+      PUPPET
+
+      offending = described_class.generate.each_line.with_index(1).select { |line, _| line =~ /[ \t]+\n\z/ }
+      expect(offending).to be_empty
+    end
+  end
+
   it 'renders only private functions correctly' do
     expect(YARD::Parser::SourceParser.parse_string(<<~PUPPET, :puppet).enumerator.length).to eq(1)
       # @return void
@@ -183,7 +210,6 @@ describe OpenvoxStrings::Markdown do
       #### Private Functions
 
       * `func_private`
-
     MARKDOWN
   end
 
@@ -217,7 +243,6 @@ describe OpenvoxStrings::Markdown do
       The func_public function.
 
       Returns: `Any` void
-
     MARKDOWN
   end
 
@@ -261,7 +286,6 @@ describe OpenvoxStrings::Markdown do
       The func_public function.
 
       Returns: `Any` void
-
     MARKDOWN
   end
 
