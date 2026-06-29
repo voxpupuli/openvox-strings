@@ -56,7 +56,15 @@ module OpenvoxStrings::Markdown
       end
     end
 
-    output.join
+    normalize(output.join)
+  end
+
+  # Cleans up the assembled markdown so it ends with a single newline and has
+  # no lines with trailing whitespace.
+  # @param [String] markdown the rendered document
+  # @return [String] the normalized document
+  def self.normalize(markdown)
+    "#{markdown.gsub(/[ \t]+$/, '').rstrip}\n"
   end
 
   # mimicks the behavior of the json render, although path will never be nil
