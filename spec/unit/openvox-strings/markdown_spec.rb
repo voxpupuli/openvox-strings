@@ -83,11 +83,52 @@ describe OpenvoxStrings::Markdown do
       it 'includes links to tasks' do
         expect(output).to match(/\[`backup`\]\(#.*\).*backup your database/i)
       end
+
+      it 'includes links to providers' do
+        expect(output).to match(/\[`linux`\]\(#provider_database_linux\).*example provider on linux/i)
+      end
     end
 
     describe 'resource types' do
       it 'includes checks in parameter list for the database type' do
         expect(output).to match(/check to see if the database already exists/i)
+      end
+    end
+
+    describe 'providers' do
+      it 'includes a section for the provider' do
+        expect(output).to match(/## Providers/)
+        expect(output).to match(%r{### <a name="provider_database_linux"></a>`linux`})
+      end
+
+      it 'names the resource type the provider implements' do
+        expect(output).to match(/provider for the `database` resource type/i)
+      end
+
+      it 'includes the provider description' do
+        expect(output).to match(/an example provider on linux/i)
+      end
+
+      it 'includes the confines' do
+        expect(output).to match(/#### Confines/)
+        expect(output).to match(/\* `kernel`: Linux/)
+        expect(output).to match(/\* `osfamily`: RedHat/)
+      end
+
+      it 'includes the defaultfor constraints' do
+        expect(output).to match(/#### Default for/)
+        expect(output).to match(/\* `kernel` == `Linux`/)
+        expect(output).to match(/\* `osfamily` == `RedHat`, `operatingsystemmajrelease` == `7`/)
+      end
+
+      it 'includes the features' do
+        expect(output).to match(/#### Features/)
+        expect(output).to match(/\* `implements_some_feature`/)
+        expect(output).to match(/\* `some_other_feature`/)
+      end
+
+      it 'includes the commands' do
+        expect(output).to match(%r{\* `foo`: `/usr/bin/foo`})
       end
     end
 

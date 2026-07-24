@@ -1,0 +1,84 @@
+### <a name="<%= link %>"></a>`<%= name %>`
+
+Provider for the `<%= type_name %>` resource type.
+
+<% if text -%>
+<%= text %>
+<% elsif summary -%>
+<%= summary %>
+<% else -%>
+<%= "The #{name} provider." %>
+<% end -%>
+
+<% if deprecated -%>
+* **DEPRECATED** <%= deprecated %>
+
+<% end -%>
+<% if todo -%>
+* **TODO** <%= todo %>
+
+<% end -%>
+<% if note -%>
+* **Note** <%= note %>
+
+<% end -%>
+<% if since -%>
+* **Since** <%= since %>
+
+<% end -%>
+<% if see -%>
+* **See also**
+<% see.each do |sa| -%>
+<% if sa[:name] -%>
+<%= "  * #{sa[:name]}" %>
+<% end -%>
+<% if sa[:text] -%>
+<%= "  * #{sa[:text]}" %>
+<% end -%>
+<% end -%>
+
+<% end -%>
+<% if examples -%>
+#### Examples
+
+<% examples.each do |eg| -%>
+##### <%= eg[:name] %>
+
+```puppet
+<%= eg[:text] %>
+```
+
+<% end -%>
+<% end -%>
+<% if confines -%>
+#### Confines
+
+<% confines.each do |key, value| -%>
+* `<%= key %>`: <%= value %>
+<% end -%>
+
+<% end -%>
+<% if defaults -%>
+#### Default for
+
+<% defaults.each do |constraints| -%>
+* <%= constraints.map { |k, v| "`#{k}` == `#{v}`" }.join(', ') %>
+<% end -%>
+
+<% end -%>
+<% if features -%>
+#### Features
+
+<% features.each do |feature| -%>
+* `<%= feature %>`
+<% end -%>
+
+<% end -%>
+<% if commands -%>
+#### Commands
+
+<% commands.each do |key, value| -%>
+* `<%= key %>`: `<%= value %>`
+<% end -%>
+
+<% end -%>
