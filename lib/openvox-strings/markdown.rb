@@ -9,6 +9,7 @@ module OpenvoxStrings::Markdown
   require_relative 'markdown/defined_type'
   require_relative 'markdown/data_type'
   require_relative 'markdown/resource_type'
+  require_relative 'markdown/provider'
   require_relative 'markdown/puppet_task'
   require_relative 'markdown/puppet_plan'
 
@@ -20,6 +21,7 @@ module OpenvoxStrings::Markdown
       OpenvoxStrings::Markdown::PuppetClass,
       OpenvoxStrings::Markdown::DefinedType,
       OpenvoxStrings::Markdown::ResourceType,
+      OpenvoxStrings::Markdown::Provider,
       OpenvoxStrings::Markdown::Function,
       OpenvoxStrings::Markdown::DataType,
       OpenvoxStrings::Markdown::PuppetTask,
