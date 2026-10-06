@@ -70,7 +70,6 @@ describe 'Generating Markdown' do
     * **b**: Option B
 
     Default value: `'a'`
-
   EOF
 
   it 'renders Markdown to stdout when using --format markdown' do

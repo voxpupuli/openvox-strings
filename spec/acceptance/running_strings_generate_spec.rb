@@ -81,9 +81,10 @@ describe 'Generating module documentation using generate action' do
     expect_file_contain('doc/puppet_classes/test.html', [
                           '<p class="tag_title">Enum Options (<tt>myenum</tt>):</p>',
                           '<span class="name">a</span>',
-                          "&mdash; <div class='inline'><p>Option A</p>\n</div>",
+                          # YARD 0.9.40 and later omit the newline that older versions put before </div>
+                          "&mdash; <div class='inline'><p>Option A</p>",
                           '<span class="name">b</span>',
-                          "&mdash; <div class='inline'><p>Option B</p>\n</div>",
+                          "&mdash; <div class='inline'><p>Option B</p>",
                         ])
   end
 end
