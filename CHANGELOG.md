@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v7.2.0](https://github.com/voxpupuli/openvox-strings/tree/v7.2.0) (2026-10-06)
+
+[Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v7.1.0...v7.2.0)
+
+**Implemented enhancements:**
+
+- openvox: Allow 9.x [\#54](https://github.com/voxpupuli/openvox-strings/pull/54) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+**Fixed bugs:**
+
+- \(bug\) Normalize markdown output whitespace and trailing newline [\#49](https://github.com/voxpupuli/openvox-strings/pull/49) ([vchepkov](https://github.com/vchepkov))
+
 ## [v7.1.0](https://github.com/voxpupuli/openvox-strings/tree/v7.1.0) (2026-03-12)
 
 [Full Changelog](https://github.com/voxpupuli/openvox-strings/compare/v7.0.0...v7.1.0)
