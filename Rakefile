@@ -7,7 +7,7 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 RSpec::Core::RakeTask.new(:acceptance) do |t|
-  t.pattern = 'spec/unit/**/*.rb'
+  t.pattern = 'spec/acceptance/**/*_spec.rb'
 end
 
 desc 'run unit tests'
