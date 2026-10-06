@@ -93,7 +93,7 @@ describe OpenvoxStrings::Markdown do
 
     describe 'deprecated message' do
       it 'includes deprecated message' do
-        expect(output).to match(/\*\*DEPRECATED\*\* No longer supported and will be removed in a future release/)
+        expect(output).to include('**DEPRECATED** No longer supported and will be removed in a future release')
       end
     end
 
@@ -132,7 +132,7 @@ describe OpenvoxStrings::Markdown do
         end
 
         it 'includes param type' do
-          expect(output).to match(/Data type: `Variant\[Numeric, String\[1,2\]\]`/)
+          expect(output).to include('Data type: `Variant[Numeric, String[1,2]]`')
         end
 
         it 'includes param description' do
@@ -146,7 +146,7 @@ describe OpenvoxStrings::Markdown do
 
       describe 'function docs' do
         it 'includes signature' do
-          expect(output).to match(/UnitDataType\.func1\(param1, param2\)/)
+          expect(output).to include('UnitDataType.func1(param1, param2)')
         end
 
         it 'includes summary' do
