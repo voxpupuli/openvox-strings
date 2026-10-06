@@ -10,9 +10,8 @@ openvox-strings generates documentation for Puppet code and extensions written i
 Strings processes code and YARD-style code comments to create documentation in HTML, Markdown, or JSON formats.
 
 It's a fork of https://github.com/puppetlabs/puppet-strings.
-Some parts of the documentation still refer to "Puppet Strings"
 
-## Installing Puppet Strings
+## Installing openvox-strings
 
 ### Requirements
 
@@ -21,11 +20,11 @@ Some parts of the documentation still refer to "Puppet Strings"
 
 For detailed dependencies, please checkout the gemspec file.
 
-### Install Puppet Strings
+### Install openvox-strings
 
-Installation instructions vary slightly depending on how you have installed Puppet:
+Installation instructions vary slightly depending on how you have installed OpenVox:
 
-#### Installing Puppet Strings with the [`openvox-agent`](https://docs.openvoxproject.org/openvox/latest/about_agent.html) package
+#### Installing openvox-strings with the [`openvox-agent`](https://docs.openvoxproject.org/openvox/latest/about_agent.html) package
 
 Install the `openvox-strings` gem into the `openvox-agent` environment:
 
@@ -33,7 +32,7 @@ Install the `openvox-strings` gem into the `openvox-agent` environment:
 sudo /opt/puppetlabs/puppet/bin/gem install openvox-strings
 ```
 
-#### Installing Puppet Strings with standalone `openvox` gem
+#### Installing openvox-strings with the standalone `openvox` gem
 
 Install the `openvox-strings` gem into the same Ruby installation where you have installed the `openvox` gem:
 
@@ -41,19 +40,19 @@ Install the `openvox-strings` gem into the same Ruby installation where you have
 gem install openvox-strings
 ```
 
-### Configure Puppet Strings (Optional)
+### Configure openvox-strings (Optional)
 
-To use YARD options with Puppet Strings, specify a `.yardopts` file in the same directory in which you run `puppet strings`.
+To use YARD options with Strings, specify a `.yardopts` file in the same directory in which you run `puppet strings`.
 
-Puppet Strings supports the Markdown format and automatically sets the YARD `markup` option to `markdown`.
+Strings supports the Markdown format and automatically sets the YARD `markup` option to `markdown`.
 
 To see a list of available YARD options, run `yard help doc`.
 
 For details about YARD options configuration, see the [YARD docs](http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#config).
 
-## Generating documentation with Puppet Strings
+## Generating documentation with openvox-strings
 
-By default, Puppet Strings outputs documentation as HTML, or you can specify JSON or Markdown output instead.
+By default, Strings outputs documentation as HTML, or you can specify JSON or Markdown output instead.
 
 Strings generates reference documentation based on the code and Strings code comments in all Puppet and
 Ruby source files under the `./manifests/`, `./functions/`, `./lib/`, `./types/`, and `./tasks/` directories.
@@ -84,7 +83,7 @@ If you'd like to contribute to `openvox-strings`, check out [CONTRIBUTING.md](ht
 
 ### Running Specs
 
-If you plan on developing features or fixing bugs in Puppet Strings, it is essential that you run specs before opening a pull request.
+If you plan on developing features or fixing bugs in openvox-strings, it is essential that you run specs before opening a pull request.
 
 To run specs, run the `spec` rake task:
 
