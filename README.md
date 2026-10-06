@@ -10,30 +10,29 @@ openvox-strings generates documentation for Puppet code and extensions written i
 Strings processes code and YARD-style code comments to create documentation in HTML, Markdown, or JSON formats.
 
 It's a fork of https://github.com/puppetlabs/puppet-strings.
-Some parts of the documentation still refer to to "Puppet Strings"
 
-## Installing Puppet Strings
+## Installing openvox-strings
 
 ### Requirements
 
-* Ruby 2.7 or newer
-* OpenVox 7 or newer
+* Ruby 3.2 or newer
+* OpenVox 8.24 or newer
 
 For detailed dependencies, please checkout the gemspec file.
 
-### Install Puppet Strings
+### Install openvox-strings
 
-Installation instructions vary slightly depending on how you have installed Puppet:
+Installation instructions vary slightly depending on how you have installed OpenVox:
 
-#### Installing Puppet Strings with [`puppet-agent`](https://puppet.com/docs/puppet/6.4/about_agent.html#what-puppet-agent-and-puppetserver-are) package
+#### Installing openvox-strings with the [`openvox-agent`](https://docs.openvoxproject.org/openvox/latest/about_agent.html) package
 
-Install the `openvox-strings` gem into the `puppet-agent` environment:
+Install the `openvox-strings` gem into the `openvox-agent` environment:
 
 ``` bash
 sudo /opt/puppetlabs/puppet/bin/gem install openvox-strings
 ```
 
-#### Installing Puppet Strings with standalone `openvox` gem
+#### Installing openvox-strings with the standalone `openvox` gem
 
 Install the `openvox-strings` gem into the same Ruby installation where you have installed the `openvox` gem:
 
@@ -41,19 +40,19 @@ Install the `openvox-strings` gem into the same Ruby installation where you have
 gem install openvox-strings
 ```
 
-### Configure Puppet Strings (Optional)
+### Configure openvox-strings (Optional)
 
-To use YARD options with Puppet Strings, specify a `.yardopts` file in the same directory in which you run `puppet strings`.
+To use YARD options with Strings, specify a `.yardopts` file in the same directory in which you run `puppet strings`.
 
-Puppet Strings supports the Markdown format and automatically sets the YARD `markup` option to `markdown`.
+Strings supports the Markdown format and automatically sets the YARD `markup` option to `markdown`.
 
 To see a list of available YARD options, run `yard help doc`.
 
 For details about YARD options configuration, see the [YARD docs](http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#config).
 
-## Generating documentation with Puppet Strings
+## Generating documentation with openvox-strings
 
-By default, Puppet Strings outputs documentation as HTML, or you can specify JSON or Markdown output instead.
+By default, Strings outputs documentation as HTML, or you can specify JSON or Markdown output instead.
 
 Strings generates reference documentation based on the code and Strings code comments in all Puppet and
 Ruby source files under the `./manifests/`, `./functions/`, `./lib/`, `./types/`, and `./tasks/` directories.
@@ -64,15 +63,15 @@ JSON and Markdown output include the reference documentation only.
 Strings sends JSON output to either STDOUT or to a file.
 Markdown output is written to a REFERENCE.md file in the module's main directory.
 
-See the [Puppet Strings documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) for complete instructions for generating documentation with Strings.
+See the [OpenVox Strings documentation](https://docs.openvoxproject.org/openvox/latest/openvox_strings.html) for complete instructions for generating documentation with Strings.
 
-For code comment style guidelines and examples, see the [Puppet Strings style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html).
+For code comment style guidelines and examples, see the [OpenVox Strings style guide](https://docs.openvoxproject.org/openvox/latest/openvox_strings_style.html).
 
 ### Additional Resources
 
 Here are a few other good resources for getting started with documentation:
 
-* [Module README Template](https://puppet.com/docs/puppet/latest/puppet_strings.html)
+* [Module README Template](https://docs.openvoxproject.org/openvox/latest/modules_documentation.html)
 * [YARD Getting Started Guide](http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md)
 * [YARD Tags Overview](http://www.rubydoc.info/gems/yard/file/docs/Tags.md)
 
@@ -80,25 +79,27 @@ Here are a few other good resources for getting started with documentation:
 
 We love contributions from the community!
 
-If you'd like to contribute to `openvox-strings`, check out [CONTRIBUTING.md](https://github.com/voxpupuli/openvox-strings/blob/main/CONTRIBUTING.md) to get information on the contribution process.
+If you'd like to contribute to `openvox-strings`, check out [CONTRIBUTING.md](https://github.com/voxpupuli/.github/blob/master/CONTRIBUTING.md) to get information on the contribution process.
 
 ### Running Specs
 
-If you plan on developing features or fixing bugs in Puppet Strings, it is essential that you run specs before opening a pull request.
+If you plan on developing features or fixing bugs in openvox-strings, it is essential that you run specs before opening a pull request.
 
 To run specs, run the `spec` rake task:
 
 ``` bash
-bundle install --path .bundle/gems
+bundle config set --local path .bundle/gems
+bundle install
 bundle exec rake spec
 ```
 
 ### Running Acceptance Tests
 
-To run specs, run the `acceptance` rake task:
+To run acceptance tests, run the `acceptance` rake task:
 
 ``` bash
-bundle install --path .bundle/gems
+bundle config set --local path .bundle/gems
+bundle install
 bundle exec rake acceptance
 ```
 
@@ -109,7 +110,7 @@ This codebase is licensed under Apache 2.0. However, the open source dependencie
 ## Support
 
 Please log issues in [GitHub issues](https://github.com/voxpupuli/openvox-strings/issues).
-Check out [CONTRIBUTING.md](https://github.com/voxpupuli/openvox-strings/blob/main/CONTRIBUTING.md) for tips on writing _the best_ issues.
+Check out [CONTRIBUTING.md](https://github.com/voxpupuli/.github/blob/master/CONTRIBUTING.md) for tips on writing _the best_ issues.
 
 We use semantic version numbers for our releases and recommend that users upgrade to patch releases and minor releases as they become available.
 
