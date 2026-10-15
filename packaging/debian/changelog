@@ -1,0 +1,6 @@
+openvox-strings (7.2.0-1) unstable; urgency=medium
+
+  * Initial packaging: install openvox-strings, yard and rgen into the
+    openvox-agent Ruby.
+
+ -- Jörn Ott <joern.ott@ott-consult.de>  Thu, 15 Oct 2026 12:00:00 +0200

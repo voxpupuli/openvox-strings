@@ -1,0 +1,51 @@
+Source: openvox-strings
+Section: admin
+Priority: optional
+Maintainer: Vox Pupuli <voxpupuli@groups.io>
+Uploaders: Jörn Ott <joern.ott@ott-consult.de>
+Build-Depends: debhelper-compat (= 13),
+               openvox-agent
+Standards-Version: 4.7.2
+Homepage: https://github.com/voxpupuli/openvox-strings
+Vcs-Git: https://github.com/voxpupuli/openvox-strings.git
+Vcs-Browser: https://github.com/voxpupuli/openvox-strings
+Rules-Requires-Root: no
+
+Package: openvox-strings
+Architecture: all
+Depends: openvox-gem-rgen (>= 0.9),
+         openvox-gem-rgen (<< 0.11),
+         openvox-gem-yard (>= 0.9),
+         openvox-gem-yard (<< 1.0),
+         ${misc:Depends},
+         ${openvox:Depends}
+Description: generate documentation for OpenVox code using YARD
+ openvox-strings generates documentation for Puppet code and extensions
+ written in Puppet and Ruby. It processes code and YARD-style code comments
+ to create documentation in HTML, Markdown, or JSON formats.
+ .
+ This package installs the openvox-strings gem into the Ruby shipped with
+ openvox-agent, equivalent to running
+ "/opt/puppetlabs/puppet/bin/gem install openvox-strings". It provides the
+ "puppet strings" subcommand and rake tasks for module development.
+
+Package: openvox-gem-yard
+Architecture: all
+Depends: ${misc:Depends},
+         ${openvox:Depends}
+Description: YARD documentation tool for the openvox-agent Ruby
+ YARD is a documentation generation tool for the Ruby programming language.
+ .
+ This package installs the yard gem into the Ruby shipped with
+ openvox-agent, including the yard, yardoc and yri commands in
+ /opt/puppetlabs/puppet/bin.
+
+Package: openvox-gem-rgen
+Architecture: all
+Depends: ${misc:Depends},
+         ${openvox:Depends}
+Description: Ruby modelling and generator framework for the openvox-agent Ruby
+ RGen is a framework for model-driven development in Ruby. openvox-strings
+ uses it to parse Puppet code.
+ .
+ This package installs the rgen gem into the Ruby shipped with openvox-agent.

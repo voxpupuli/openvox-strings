@@ -1,0 +1,5 @@
+# The gem is installed into the Ruby shipped with openvox-agent, exactly as
+# "gem install" would do it, keeping the file modes shipped in the gem.
+openvox-gem-rgen: dir-or-file-in-opt
+openvox-gem-rgen: executable-not-elf-or-script [opt/puppetlabs/*]
+openvox-gem-rgen: package-contains-documentation-outside-usr-share-doc [opt/puppetlabs/*]

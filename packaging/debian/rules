@@ -1,0 +1,59 @@
+#!/usr/bin/make -f
+#
+# Installs the gems into the Ruby shipped with openvox-agent, producing the
+# same files as "/opt/puppetlabs/puppet/bin/gem install openvox-strings".
+
+include /usr/share/dpkg/pkg-info.mk
+
+AIO_BIN := /opt/puppetlabs/puppet/bin
+AIO_GEM := $(AIO_BIN)/gem
+GEM_DIR := $(shell $(AIO_BIN)/ruby -e 'print Gem.default_dir')
+
+# The gem directory depends on the Ruby ABI, which only changes with a new
+# openvox-agent major release.
+AGENT_MAJOR := $(firstword $(subst ., ,$(shell dpkg-query -W -f='$${Version}' openvox-agent)))
+OPENVOX_DEPENDS := openvox-agent (>= $(AGENT_MAJOR)), openvox-agent (<< $(shell expr $(AGENT_MAJOR) + 1))
+
+DEB_REVISION := $(lastword $(subst -, ,$(DEB_VERSION)))
+gem_version = $(shell awk '$$1 == "$(1)" { print $$2 }' debian/vendor-gems)
+YARD_VERSION := $(call gem_version,yard)
+RGEN_VERSION := $(call gem_version,rgen)
+# A prebuilt openvox-strings gem can be shipped in the gems component (see
+# OPENVOX_STRINGS_GEM in packaging/build-deb.sh); otherwise it is built here.
+PREBUILT_GEM := $(wildcard gems/openvox-strings-$(DEB_VERSION_UPSTREAM).gem)
+STRINGS_GEM := $(or $(PREBUILT_GEM),debian/build/openvox-strings-$(DEB_VERSION_UPSTREAM).gem)
+
+# gem_install <package> <gem file>
+gem_install = $(AIO_GEM) install --local --ignore-dependencies --no-user-install \
+	--document ri \
+	--install-dir $(CURDIR)/debian/$(1)$(GEM_DIR) \
+	--bindir $(CURDIR)/debian/$(1)$(AIO_BIN) \
+	$(2)
+
+%:
+	dh $@
+
+override_dh_auto_build:
+ifeq ($(PREBUILT_GEM),)
+	mkdir -p debian/build
+	$(AIO_GEM) build openvox-strings.gemspec --output $(STRINGS_GEM)
+endif
+
+override_dh_auto_install:
+	$(call gem_install,openvox-gem-yard,gems/yard-$(YARD_VERSION).gem)
+	$(call gem_install,openvox-gem-rgen,gems/rgen-$(RGEN_VERSION).gem)
+	$(call gem_install,openvox-strings,$(STRINGS_GEM))
+	# Drop the empty skeleton directories gem creates in the install dir
+	find debian/openvox-strings debian/openvox-gem-* -depth -type d -empty -delete
+
+override_dh_auto_clean:
+	rm -rf debian/build
+
+override_dh_auto_test:
+
+override_dh_gencontrol:
+	dh_gencontrol -popenvox-strings -- '-Vopenvox:Depends=$(OPENVOX_DEPENDS)'
+	dh_gencontrol -popenvox-gem-yard -- '-Vopenvox:Depends=$(OPENVOX_DEPENDS)' \
+		-v$(YARD_VERSION)-$(DEB_REVISION)
+	dh_gencontrol -popenvox-gem-rgen -- '-Vopenvox:Depends=$(OPENVOX_DEPENDS)' \
+		-v$(RGEN_VERSION)-$(DEB_REVISION)

@@ -1,0 +1,2 @@
+# Debian/RPM tooling requires LF line endings
+* text eol=lf

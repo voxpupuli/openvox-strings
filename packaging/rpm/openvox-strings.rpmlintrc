@@ -1,0 +1,16 @@
+# The gems are installed into the Ruby shipped with openvox-agent, exactly as
+# "gem install" would do it. The files below are kept as shipped in the gems.
+#
+# rpmlint 1.x (EL) and 2.x (SUSE, Fedora) use different check names and 2.x
+# reports filters that never match, so some filters combine the names used by
+# both versions.
+addFilter("(dir-or-file-in-opt|filelist-forbidden-opt) /opt/puppetlabs")
+addFilter("openvox-gem-yard.* wrong-script-interpreter /opt/puppetlabs/puppet/bin/")
+addFilter("openvox-gem-.* (script-without-shebang|wrong-script-end-of-line-encoding|env-script-interpreter|hidden-file-or-dir|zero-length) /opt/puppetlabs/")
+addFilter("(openvox-gem-.* no-documentation|files-duplicate /opt/puppetlabs/)")
+# SPDX license identifiers are unknown to rpmlint 1.x; the gem test suites
+# need development dependencies that are not packaged.
+addFilter("(invalid-license (Apache-2.0|MIT)|no-%check-section)")
+# Source0 is created from the git checkout by packaging/build-rpm.sh
+addFilter("invalid-url Source0:")
+addFilter("spelling-error .* (modelling|subcommand|puppetlabs)")
