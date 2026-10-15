@@ -3,6 +3,9 @@
 #
 # Usage: packaging/build-deb.sh [extra dpkg-buildpackage arguments]
 #
+# Set OPENVOX_STRINGS_GEM to the path of a prebuilt openvox-strings gem to
+# package that gem instead of building it from the checkout.
+#
 # Requires: git, dpkg-dev, debhelper and openvox-agent (from the OpenVox apt
 # repository). Install the build dependencies with
 # "mk-build-deps -i -r packaging/debian/control".
@@ -37,6 +40,9 @@ grep -v '^#' packaging/debian/vendor-gems | while read -r gemname version sha256
   (cd "$builddir/gems" && "$gem" fetch "$gemname" --version "$version" --platform ruby >/dev/null)
   echo "$sha256  $builddir/gems/$gemname-$version.gem" | sha256sum -c --quiet
 done
+if [ -n "${OPENVOX_STRINGS_GEM:-}" ]; then
+  cp "$OPENVOX_STRINGS_GEM" "$builddir/gems/$name-$upstream.gem"
+fi
 tar -C "$builddir" --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - gems \
   | gzip -n > "$builddir/${name}_$upstream.orig-gems.tar.gz"
 rm -rf "$builddir/gems"

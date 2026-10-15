@@ -1,0 +1,146 @@
+---
+name: package
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read # minimal permissions that we have to grant
+
+jobs:
+  gem:
+    name: Build the gem
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'ruby'
+      - name: Build gem
+        run: gem build --strict --verbose *.gemspec
+      - name: Upload gem
+        uses: actions/upload-artifact@v7
+        with:
+          name: gem
+          path: '*.gem'
+          compression-level: 0
+
+  package:
+    name: ${{ matrix.name }}
+    needs: gem
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: debian-12
+            name: Debian 12
+            image: debian:12
+            release: https://apt.voxpupuli.org/openvox8-release-debian12.deb
+          - id: debian-13
+            name: Debian 13
+            image: debian:13
+            release: https://apt.voxpupuli.org/openvox8-release-debian13.deb
+          - id: ubuntu-22.04
+            name: Ubuntu 22.04
+            image: ubuntu:22.04
+            release: https://apt.voxpupuli.org/openvox8-release-ubuntu22.04.deb
+          - id: ubuntu-24.04
+            name: Ubuntu 24.04
+            image: ubuntu:24.04
+            release: https://apt.voxpupuli.org/openvox8-release-ubuntu24.04.deb
+          - id: el-8
+            name: EL 8
+            image: almalinux:8
+            release: https://yum.voxpupuli.org/openvox8-release-el-8.noarch.rpm
+          - id: el-9
+            name: EL 9
+            image: almalinux:9
+            release: https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
+          - id: el-10
+            name: EL 10
+            image: almalinux:10
+            release: https://yum.voxpupuli.org/openvox8-release-el-10.noarch.rpm
+          - id: sles-15
+            name: SLES 15 (openSUSE Leap 15.6)
+            image: registry.opensuse.org/opensuse/leap:15.6
+            release: https://yum.voxpupuli.org/openvox8-release-sles-15.noarch.rpm
+          - id: sles-16
+            name: SLES 16 (openSUSE Leap 16.0)
+            image: registry.opensuse.org/opensuse/leap:16.0
+            release: https://yum.voxpupuli.org/openvox8-release-sles-16.noarch.rpm
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Install openvox-agent and build tools
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if command -v apt-get >/dev/null; then
+            apt-get update -q
+            apt-get install -y -q --no-install-recommends ca-certificates wget git devscripts equivs
+            wget -q -O /tmp/release.deb '${{ matrix.release }}'
+            apt-get install -y -q /tmp/release.deb
+            apt-get update -q
+            apt-get install -y -q openvox-agent
+            echo format=deb >> "$GITHUB_ENV"
+          elif command -v zypper >/dev/null; then
+            zypper -n install wget git rpm-build tar gzip findutils diffutils
+            wget -q -O /tmp/release.rpm '${{ matrix.release }}'
+            rpm -i --nosignature /tmp/release.rpm
+            zypper -n --gpg-auto-import-keys refresh
+            zypper -n install openvox-agent
+            echo format=rpm >> "$GITHUB_ENV"
+          else
+            dnf -y install '${{ matrix.release }}'
+            dnf -y install openvox-agent git rpm-build findutils diffutils
+            echo format=rpm >> "$GITHUB_ENV"
+          fi
+          /opt/puppetlabs/puppet/bin/ruby --version
+      - uses: actions/checkout@v7
+      - name: Mark the checkout as safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Download gem
+        uses: actions/download-artifact@v8
+        with:
+          name: gem
+          path: gem
+      - name: Install Debian build dependencies
+        if: env.format == 'deb'
+        run: mk-build-deps -i -r -t 'apt-get -y -q --no-install-recommends' packaging/debian/control
+      - name: Build packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          export OPENVOX_STRINGS_GEM=$(ls gem/openvox-strings-*.gem)
+          packaging/build-${format}.sh
+          mkdir packages
+          if [ "$format" = deb ]; then
+            cp pkg/debian/*.deb packages/
+          else
+            cp pkg/rpm/RPMS/noarch/*.rpm packages/
+          fi
+          ls -l packages
+      - name: Compare package installation with gem install
+        run: packaging/test/compare-install.sh gem/openvox-strings-*.gem packages/*
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: packages-${{ matrix.id }}
+          path: packages/*
+          compression-level: 0
+
+  packages:
+    if: always()
+    needs:
+      - gem
+      - package
+    runs-on: ubuntu-24.04
+    name: Packages
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

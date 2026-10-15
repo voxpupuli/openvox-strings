@@ -18,7 +18,10 @@ DEB_REVISION := $(lastword $(subst -, ,$(DEB_VERSION)))
 gem_version = $(shell awk '$$1 == "$(1)" { print $$2 }' debian/vendor-gems)
 YARD_VERSION := $(call gem_version,yard)
 RGEN_VERSION := $(call gem_version,rgen)
-STRINGS_GEM := debian/build/openvox-strings-$(DEB_VERSION_UPSTREAM).gem
+# A prebuilt openvox-strings gem can be shipped in the gems component (see
+# OPENVOX_STRINGS_GEM in packaging/build-deb.sh); otherwise it is built here.
+PREBUILT_GEM := $(wildcard gems/openvox-strings-$(DEB_VERSION_UPSTREAM).gem)
+STRINGS_GEM := $(or $(PREBUILT_GEM),debian/build/openvox-strings-$(DEB_VERSION_UPSTREAM).gem)
 
 # gem_install <package> <gem file>
 gem_install = $(AIO_GEM) install --local --ignore-dependencies --no-user-install \
@@ -31,8 +34,10 @@ gem_install = $(AIO_GEM) install --local --ignore-dependencies --no-user-install
 	dh $@
 
 override_dh_auto_build:
+ifeq ($(PREBUILT_GEM),)
 	mkdir -p debian/build
 	$(AIO_GEM) build openvox-strings.gemspec --output $(STRINGS_GEM)
+endif
 
 override_dh_auto_install:
 	$(call gem_install,openvox-gem-yard,gems/yard-$(YARD_VERSION).gem)

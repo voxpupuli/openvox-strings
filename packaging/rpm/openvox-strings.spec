@@ -20,6 +20,10 @@
 %global debug_package %{nil}
 AutoReqProv: no
 
+# "--with prebuilt_gem" packages Source3 instead of building the gem from
+# Source0 (see OPENVOX_STRINGS_GEM in packaging/build-rpm.sh).
+%bcond_with prebuilt_gem
+
 Name:           openvox-strings
 Version:        %{strings_version}
 Release:        1%{?dist}
@@ -29,6 +33,9 @@ URL:            https://github.com/voxpupuli/openvox-strings
 Source0:        %{name}-%{strings_version}.tar.gz
 Source1:        https://rubygems.org/downloads/yard-%{yard_version}.gem
 Source2:        https://rubygems.org/downloads/rgen-%{rgen_version}.gem
+%if %{with prebuilt_gem}
+Source3:        %{name}-%{strings_version}.gem
+%endif
 BuildArch:      noarch
 BuildRequires:  openvox-agent
 
@@ -79,7 +86,11 @@ This package installs the rgen gem into the Ruby shipped with openvox-agent.
 %setup -q -n %{name}-%{strings_version}
 
 %build
+%if %{with prebuilt_gem}
+cp -p %{SOURCE3} %{name}-%{strings_version}.gem
+%else
 %{aio_gem} build %{name}.gemspec --output %{name}-%{strings_version}.gem
+%endif
 
 %install
 gem_install() {

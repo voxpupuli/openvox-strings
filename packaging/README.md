@@ -76,3 +76,33 @@ up in `pkg/rpm/RPMS/` and `pkg/rpm/SRPMS/`.
   `yard_version`/`rgen_version` in the spec, and keep the version ranges in
   the spec in line with the gemspec. The build script refuses to run if the
   versions differ.
+
+## Prebuilt gem
+
+By default the packages build the openvox-strings gem from the checkout. Set
+`OPENVOX_STRINGS_GEM` to package an existing gem instead, for example the one
+published to rubygems.org:
+
+```sh
+OPENVOX_STRINGS_GEM=openvox-strings-7.2.0.gem packaging/build-deb.sh
+OPENVOX_STRINGS_GEM=openvox-strings-7.2.0.gem packaging/build-rpm.sh
+```
+
+## Verifying the packages
+
+`test/compare-install.sh` checks that installing the packages gives the same
+result as `/opt/puppetlabs/puppet/bin/gem install openvox-strings`. Run it as
+root on a system with `openvox-agent` but without the gems or packages:
+
+```sh
+sudo packaging/test/compare-install.sh openvox-strings-7.2.0.gem pkg/debian/*.deb
+```
+
+It installs the gem (with yard and rgen at the pinned versions), records mode,
+owner, type and checksum of every file in `/opt/puppetlabs`, replaces the gems
+with the packages and compares both states. It also runs `puppet strings` on a
+sample module and checks that removing the packages leaves no files behind.
+
+The `package` GitHub workflow (run on demand from the Actions tab) builds the
+gem, builds the packages from it on all supported distributions, runs this
+check and uploads the packages as workflow artifacts.

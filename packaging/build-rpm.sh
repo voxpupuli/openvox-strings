@@ -3,6 +3,9 @@
 #
 # Usage: packaging/build-rpm.sh [extra rpmbuild arguments]
 #
+# Set OPENVOX_STRINGS_GEM to the path of a prebuilt openvox-strings gem to
+# package that gem instead of building it from the checkout.
+#
 # Requires: git, rpm-build and openvox-agent (from the OpenVox yum repository).
 set -eu
 
@@ -37,6 +40,11 @@ grep -v '^#' packaging/debian/vendor-gems | while read -r gemname version sha256
   (cd "$rpmtop/SOURCES" && "$gem" fetch "$gemname" --version "$version" --platform ruby >/dev/null)
   echo "$sha256  $rpmtop/SOURCES/$gemname-$version.gem" | sha256sum -c --quiet
 done
+
+if [ -n "${OPENVOX_STRINGS_GEM:-}" ]; then
+  cp "$OPENVOX_STRINGS_GEM" "$rpmtop/SOURCES/$name-$upstream.gem"
+  set -- --with prebuilt_gem "$@"
+fi
 
 rpmbuild --define "_topdir $rpmtop" -ba "$spec" "$@"
 
