@@ -1,7 +1,8 @@
 # Packaging
 
 This directory contains the metadata to build native OS packages of
-openvox-strings for Debian/Ubuntu (`debian/`) and RHEL/EL (`rpm/`).
+openvox-strings for Debian/Ubuntu (`debian/`) and RHEL/EL, Fedora and
+SLES/openSUSE (`rpm/`).
 
 Both formats build the same three packages that install gems into the Ruby
 shipped with `openvox-agent` (`/opt/puppetlabs/puppet`):
@@ -48,7 +49,7 @@ adds the `debian/` directory and runs `dpkg-buildpackage`. Results end up in
   `debian/vendor-gems` (`sha256sum` of the `.gem` from rubygems.org) and keep
   the version ranges in `debian/control` in line with the gemspec.
 
-## RHEL / EL and compatible
+## RHEL / EL, Fedora, SLES / openSUSE
 
 ### Building
 
@@ -57,9 +58,10 @@ The build host needs the OpenVox yum repository (see
 dependency, and network access to rubygems.org to fetch the pinned gems.
 
 ```sh
-sudo dnf install git rpm-build openvox-agent
+sudo dnf install git rpm-build openvox-agent         # EL, Fedora
+sudo zypper install git rpm-build openvox-agent      # SLES, openSUSE
 packaging/build-rpm.sh
-rpmlint -f packaging/rpm/openvox-strings.rpmlintrc pkg/rpm/RPMS/noarch/*.rpm
+rpmlint -f packaging/rpm/openvox-strings.rpmlintrc pkg/rpm/RPMS/noarch/*.rpm  # rpmlint 2.x: -r
 ```
 
 The script creates the source tarball from `git HEAD`, fetches and verifies
