@@ -1,0 +1,9 @@
+# The gem is installed into the Ruby shipped with openvox-agent, exactly as
+# "gem install" would do it. Its scripts run with that Ruby, provided by the
+# openvox-agent dependency, and it keeps the files shipped in the gem.
+openvox-gem-yard: dir-or-file-in-opt
+openvox-gem-yard: ruby-script-but-no-ruby-dep * [opt/puppetlabs/*]
+openvox-gem-yard: wrong-path-for-interpreter /opt/puppetlabs/puppet/bin/ruby != /usr/bin/ruby [opt/puppetlabs/puppet/bin/*]
+openvox-gem-yard: embedded-javascript-library please use libjs-jquery [opt/puppetlabs/*]
+openvox-gem-yard: package-contains-documentation-outside-usr-share-doc [opt/puppetlabs/*]
+openvox-gem-yard: extra-license-file [opt/puppetlabs/*]

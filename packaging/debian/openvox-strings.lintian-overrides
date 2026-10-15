@@ -1,0 +1,5 @@
+# The gem is installed into the Ruby shipped with openvox-agent, exactly as
+# "gem install" would do it, including the docs and license shipped in the gem.
+openvox-strings: dir-or-file-in-opt
+openvox-strings: package-contains-documentation-outside-usr-share-doc [opt/puppetlabs/*]
+openvox-strings: extra-license-file [opt/puppetlabs/*]

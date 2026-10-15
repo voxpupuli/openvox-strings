@@ -1,0 +1,7 @@
+# Third-party gems installed into the openvox-agent Ruby, one binary package
+# each (openvox-gem-<name>). Fetched by packaging/build-deb.sh into the
+# "gems" orig component tarball and verified against the SHA-256 checksum.
+#
+# name  version  sha256
+yard    0.9.45   52e211493f7cb8a3ebf7e104a25a1e73937a3103092545d34cb88fafebb3dc51
+rgen    0.10.2   d978f84887a0b4815ff3a0e0c4d43a15cdeeac9fd4da02db8ec3ecd0f222f371
